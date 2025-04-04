@@ -59,26 +59,27 @@ int	ft_msize(int *ms, char *mms, int size)
 
 	i = 0;
 	j = 0;
-	k = 0;
 	res = 0;
 	while (mms[j])
 	{
-		while (j++ <= ms[i])
+		k = 0;
+		while (j <= ms[i])
+		{
+			j++;
 			k++;
-		if (k - 1 > 0)
-			res++;
+		}
 		i++;
-		if (i == size && mms[j])
+		if (k - 1 > 0 || (i == size && mms[j]))
 		{
 			res++;
-			break ;
+			if (i == size && mms[j])
+				break ;
 		}
-		k = 0;
 	}
 	return (res);
 }
 
-int	ft_strlen(char *st)
+int	ft_l(char *st)
 {
 	int	i;
 
@@ -93,25 +94,28 @@ char	**ft_split(char *str, char *charset)
 	int		i;
 	int		j;
 	int		k;
+	int		l;
 	char	**ms;
 
 	j = 0;
 	k = 0;
+	l = 0;
 	i = ft_msize(ft_pos(str, charset), str, ft_size(str, charset));
-	ms = malloc(sizeof(char*) * i + 1);
+	ms = malloc(sizeof(char *) * i + 1);
 	while (i > 0)
 		ms[i-- - 1] = malloc(sizeof(char) * 100);
 	while (str[i])
 	{
-		if (i == ft_pos(str, charset)[k])
+		if (i != ft_pos(str, charset)[k])
 		{
-			if ((i && !k) || (i && i - ft_strlen(charset) != ft_pos(str, charset)[k - 1]))
-			j++;
-			k++;
-			i += ft_strlen(charset);
+			ms[j][l++] = str[i++];
 			continue ;
 		}
-		ms[j][i] = str[i++];/////////////
+		if ((i && !k) || (i && i - ft_l(charset) != ft_pos(str, charset)[k - 1]))
+			j++;
+		l = 0;
+		k++;
+		i += ft_l(charset);
 	}
 	ms[ft_msize(ft_pos(str, charset), str, ft_size(str, charset))] = 0;
 	return (ms);
@@ -119,18 +123,13 @@ char	**ft_split(char *str, char *charset)
 int	main(void)
 {
 	int	i = 0;
-	char *st = "Danila  Vozniuk  1993 ";
-	char *sep = "";
+	char *st = " Danila Vozniuk  1993 ";
+	char *sep = " ";
 	int size = ft_size(st, sep);
 	int *ms = ft_pos(st, sep);
 	int msize = ft_msize(ms, st, size);
 	char **mms = ft_split(st, sep);
-	puts(st);
-	printf("%d\t%d\n", size, msize);
-	puts(mms[0]);
-	puts(mms[1]);
-	puts(mms[2]);
-	/*while (mms[i])
-		puts(mms[i++]);*/
+	while (mms[i])
+		puts(mms[i++]);
 	return (0);
 }
